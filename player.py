@@ -15,6 +15,7 @@ class Player():
         if int(time.time()) - self.lastAlive > 5:
             if self.ID:
                 r = room.findRoomByID(self.ID)
+                print 'room', r.ID, 'has', len(r.players), 'players'
                 if len(r.players) == 1:
                     print 'room', r.ID, 'is closed'
                     del r

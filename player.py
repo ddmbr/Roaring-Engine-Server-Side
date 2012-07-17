@@ -15,12 +15,11 @@ class Player():
         if int(time.time()) - self.lastAlive > 5:
             if self.ID != None:
                 r = room.findRoomByID(self.ID)
-                print 'room', r.ID, 'has', len(r.players), 'players'
-                if len(r.players) == 1:
-                    print 'room', r.ID, 'is closed'
-                    del r
-            print 'player', self.address, 'is disconnected'
-            del self
+                print 'player', self.address, 'is disconnected'
+                for i in range(len(r.players)):
+                    if r.players[i] == self:
+                        del r.players[i]
+                        break
 
 def findPlayerByAddress(address):
     global room

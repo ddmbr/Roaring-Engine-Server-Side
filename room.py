@@ -40,6 +40,9 @@ def roomInfo(ID, key='room-info'):
 
 def processTimeOut():
     global rooms, room_num
-    for r in rooms:
-        for p in r.players:
-            p.checkTimeOut()
+    for i in range(len(rooms)):
+        for j in range(len(rooms[i].players)):
+            rooms[i].players[j].checkTimeOut()
+        if len(rooms[i].players) == 1:
+            print 'room', r.ID, 'is closed'
+            del rooms[i]

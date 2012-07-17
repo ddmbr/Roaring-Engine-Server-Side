@@ -13,7 +13,9 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
     when sending data back via sendto().
     """
 
-    def send(self, data, address = self.client_address):
+    def send(self, data, address = None):
+        if address == None:
+            address = self.client_address
         socket = self.request[1]
         socket.sendto(json.dumps(data), address)
 
@@ -31,7 +33,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         if data[0] == 'new-room':
             print self.client_address, 'want to create a room'
             p = player.findPlayerByAddress(self.client_address)
-            if p != None and p.ID != None
+            if p != None and p.ID != None:
                 print 'but he\'d joined room', p.ID
                 return
             r = room.newRoom()
@@ -91,7 +93,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         #
         # When a player want to be started
         # just start him
-        elif data[0] == 'start-me'
+        elif data[0] == 'start-me':
             p = player.findPlayerByAddress(self.client_address)
             r = room.findRoomByID(p.ID)
             self.startGame(p, r)
@@ -142,7 +144,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
                 else:
                     self.send(sync_data, p_o.address)
 
-    def startGame(p, r)
+    def startGame(p, r):
         """ Tell the specific player to start the game """
 
         start_data = ['','start', len(room.players)]

@@ -5,7 +5,6 @@ import random
 from room import *
 import player
 
-
 class MyUDPHandler(SocketServer.BaseRequestHandler):
     """
     This class works similar to the TCP handler class, except that
@@ -15,11 +14,11 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
     """
 
     def handle(self):
-    global rooms, room_num, player
+    global room, player
         data = self.request[0].strip()
     data = json.loads(data)
         socket = self.request[1]
-        #print self.client_address[0],"wrote:", data
+    #
     # Situations when game not ready
     if data[0] == 'new-room':
         print self.client_address, 'want to create a room'
@@ -27,12 +26,9 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         if p != None:
             print 'but he\'d joined room', p.ID
             return
-        ID = room_num
-        rooms.append(Room(ID))
-        room_num += 1
-        room = findRoomByID(ID)
+        r = new_room()
         room.addPlayer(self.client_address)
-        print 'he is now in room', ID
+        print 'he is now in room', r.ID
     elif data[0] == 'my-room':
         player = player.findPlayerByAddress(self.client_address)
         if player == None:

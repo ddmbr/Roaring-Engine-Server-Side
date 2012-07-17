@@ -23,3 +23,9 @@ def findRoomByID(ID):
 		return room
 	else:
 		return None
+
+def new_room():
+    ID = room_num
+    rooms.append(Room(ID))
+    room_num += 1
+    room = findRoomByID(ID)

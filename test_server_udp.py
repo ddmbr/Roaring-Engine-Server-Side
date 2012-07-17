@@ -20,6 +20,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         socket.sendto(json.dumps(data), address)
 
     def handle(self):
+        global player, room
         data = self.request[0].strip()
         data = json.loads(data)
         socket = self.request[1]

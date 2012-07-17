@@ -35,5 +35,5 @@ def newRoom():
 def roomInfo(ID, key='room-info'):
     global rooms, room_num
     r = findRoomByID(ID)
-    data = ['', key, [ID, len(len(r.players))]]
+    data = ['', key, [ID, len(r.players)]]
     return data

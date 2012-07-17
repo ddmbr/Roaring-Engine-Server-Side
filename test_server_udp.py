@@ -116,4 +116,5 @@ if __name__ == "__main__":
     HOST, PORT = "184.82.236.126", 9999
     server = SocketServer.UDPServer((HOST, PORT), MyUDPHandler)
     server.serve_forever()
+    print 'test'
 

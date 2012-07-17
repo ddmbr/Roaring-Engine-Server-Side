@@ -4,25 +4,25 @@ rooms = []
 room_num = 0
 
 class Room():
-	def __init__(self, ID):
-		self.ID = ID
-		self.players = []
-	def addPlayer(self, new_player):
-		global player
-		new_player = player.Player(new_player, self.ID)
-		self.players.append(new_player)
+    def __init__(self, ID):
+        self.ID = ID
+        self.players = []
+    def addPlayer(self, new_player):
+        global player
+        new_player = player.Player(new_player, self.ID)
+        self.players.append(new_player)
 
 def findRoomByID(ID):
     global rooms, room_num
-	success = False
-	for r in rooms:
-		if r.ID == ID:
-			success = True
-			break
-	if success:
-		return r
-	else:
-		return None
+    success = False
+    for r in rooms:
+        if r.ID == ID:
+            success = True
+            break
+    if success:
+        return r
+    else:
+        return None
 
 def newRoom():
     global rooms, room_num

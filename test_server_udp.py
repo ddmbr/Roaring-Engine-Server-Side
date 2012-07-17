@@ -82,7 +82,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
                 r = room.findRoomByID(p.ID)
                 # tell every player in the room to start the game
                 # and initialize their position
-                pos = [0, -80]
+                pos = [-1500, -1500]
                 for p in r.players:
                     p.pos = tuple(pos)
                     print p.getName(), 'is at', p.pos
@@ -106,7 +106,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
                 print 'error occur'
                 return
             r = room.findRoomByID(p.ID)
-            for p in room.players:
+            for p in r.players:
                 print 'I want to tell', p.address, 'to add player'
                 for p_o in r.players:
                     if p == p_o:
@@ -133,7 +133,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
             adjust_data = [p.getName(), 'adjust-physical', data[1]]
             for p_o in r.players:
                 if p == p_o: continue
-                self.send(data, p_o.address)
+                self.send(adjust_data, p_o.address)
         #
         # Sync keys
         elif data[0] == 'keys':
@@ -141,15 +141,13 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
             sync_data= [p.getName(), 'keys', data[1]]
             r = room.findRoomByID(p.ID)
             for p_o in r.players:
-                if p_o == p:
-                    continue
-                else:
-                    self.send(sync_data, p_o.address)
+                if p_o == p: continue
+                self.send(sync_data, p_o.address)
 
-    def startGame(p, r):
+    def startGame(self, p, r):
         """ Tell the specific player to start the game """
 
-        start_data = ['','start', len(room.players)]
+        start_data = ['','start', len(r.players)]
         self.send(start_data, p.address)
         for p_o in r.players:
             if p == p_o: continue

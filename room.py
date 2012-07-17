@@ -37,3 +37,9 @@ def roomInfo(ID, key='room-info'):
     r = findRoomByID(ID)
     data = ['', key, [ID, len(r.players)]]
     return data
+
+def processTimeOut():
+    global rooms, room_num
+    for r in rooms:
+        for p in r.players:
+            p.checkTimeOut()

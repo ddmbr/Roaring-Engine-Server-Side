@@ -55,6 +55,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         #
         # Get the rooms list
         elif data[0] == 'view-rooms':
+            room.processTimeOut()
             room_list = map(lambda x:x.ID, room.rooms)
             data = ['', 'room-list', room_list]
             self.send(data)

@@ -11,7 +11,6 @@ class Room():
 		global player
 		new_player = player.Player(new_player, self.ID)
 		self.players.append(new_player)
-		
 
 def findRoomByID(ID):
 	success = False
@@ -24,8 +23,14 @@ def findRoomByID(ID):
 	else:
 		return None
 
-def new_room():
+def newRoom():
     ID = room_num
     rooms.append(Room(ID))
     room_num += 1
-    room = findRoomByID(ID)
+    r = findRoomByID(ID)
+    return r
+
+def roomInfo(ID, key='room-info'):
+    r = findRoomByID(ID)
+    data = ['', key, [ID, len(len(r.players))]]
+    return data

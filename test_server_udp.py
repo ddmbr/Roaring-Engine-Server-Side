@@ -67,6 +67,8 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
             p = player.findPlayerByAddress(self.client_address)
             r = room.findRoomByID(p.ID)
             r.track = data[1]
+            data = room.roomInfo(ID, 'my-room')
+            self.send(data)
         #
         # Join the player to a room
         elif data[0] == 'join-room':
@@ -96,11 +98,11 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
                 # tell every player in the room to start the game
                 # and initialize their position
                 # TODO! Replace position with 'Sequence'
-                pos = [-1500, -1500]
+                seq = 0
                 for p in r.players:
-                    p.pos = tuple(pos)
-                    print p.getName(), 'is at', p.pos
-                    pos[1] += 80
+                    p.seq = seq
+                    print p.getName(), 'is at', p.seq
+                    seq += 1
                 # First start a player's game,
                 # then add other players to his game
                 for p in r.players:
@@ -119,18 +121,19 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
             if p == None:
                 print 'error occur'
                 return
+            p.setLastAlive()
             r = room.findRoomByID(p.ID)
             for p in r.players:
                 print 'I want to tell', p.address, 'to add player'
                 for p_o in r.players:
                     if p == p_o:
-                        adj_data = json.dumps(['player', 'adjust-pos', p_o.pos])
+                        adj_data = json.dumps(['player', 'adjust-pos', p_o.seq])
                         socket.sendto(adj_data, p.address)
                         continue
                     print 'add', p_o.getName()
-                    crt_data = json.dumps([p_o.getName(), 'create-player', p_o.pos])
+                    crt_data = json.dumps([p_o.getName(), 'create-player', p_o.seq])
                     socket.sendto(crt_data, p.address)
-                    adj_data = json.dumps([p_o.getName(), 'adjust-pos', p_o.pos])
+                    adj_data = json.dumps([p_o.getName(), 'adjust-pos', p_o.seq])
                     socket.sendto(adj_data, p.address)
         ################################
         #
@@ -144,6 +147,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
             if p == None:
                 print 'Error! Player not found when adjusting physics'
             r = room.findRoomByID(p.ID)
+            if r.status != 'running': return
             adjust_data = [p.getName(), 'adjust-physical', data[1]]
             for p_o in r.players:
                 if p == p_o: continue
@@ -152,8 +156,10 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         # Sync keys
         elif data[0] == 'keys':
             p = player.findPlayerByAddress(self.client_address)
-            sync_data= [p.getName(), 'keys', data[1]]
+            p.setLastAlive()
             r = room.findRoomByID(p.ID)
+            if r.status != 'running': return
+            sync_data= [p.getName(), 'keys', data[1]]
             for p_o in r.players:
                 if p_o == p: continue
                 self.send(sync_data, p_o.address)
@@ -177,7 +183,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         self.send(start_data, p.address)
         for p_o in r.players:
             if p == p_o: continue
-            crt_data = [p_o.getName(), 'create-player', p_o.pos]
+            crt_data = [p_o.getName(), 'create-player', p_o.seq]
             self.send(crt_data, p.address)
 
 if __name__ == "__main__":

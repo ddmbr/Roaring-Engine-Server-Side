@@ -43,10 +43,10 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         #
         # Get the player's current room info
         # msg format is
-        # [player's name, [room ID, number of players, etc]]
+        # [player's name, [room ID, number of players, , track, etc]]
         elif data[0] == 'my-room':
-            player = player.findPlayerByAddress(self.client_address)
-            if player == None:
+            p = player.findPlayerByAddress(self.client_address)
+            if p == None:
                 data = ['', 'my-room', [-1]]
                 self.send(data)
             else:
@@ -60,6 +60,13 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
             data = ['', 'room-list', room_list]
             self.send(data)
             print self.client_address, 'want to view rooms'
+        #
+        # change track
+        elif data[0] == 'chg-track':
+            # Do exception handling TODO
+            p = player.findPlayerByAddress(self.client_address)
+            r = room.findRoomByID(p.ID)
+            r.track = data[1]
         #
         # Join the player to a room
         elif data[0] == 'join-room':
@@ -82,6 +89,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
                 r = room.findRoomByID(p.ID)
                 # tell every player in the room to start the game
                 # and initialize their position
+                # TODO! Replace position with 'Sequence'
                 pos = [-1500, -1500]
                 for p in r.players:
                     p.pos = tuple(pos)
@@ -147,7 +155,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
     def startGame(self, p, r):
         """ Tell the specific player to start the game """
 
-        start_data = ['','start', len(r.players)]
+        start_data = ['','start', [len(r.players), r.track]]
         self.send(start_data, p.address)
         for p_o in r.players:
             if p == p_o: continue

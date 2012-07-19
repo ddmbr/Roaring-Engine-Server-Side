@@ -87,6 +87,7 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
                 data = ['', 'msg', 'Join a room first!']
             else:
                 r = room.findRoomByID(p.ID)
+                r.status = 'running'
                 # tell every player in the room to start the game
                 # and initialize their position
                 # TODO! Replace position with 'Sequence'
@@ -151,6 +152,18 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
             for p_o in r.players:
                 if p_o == p: continue
                 self.send(sync_data, p_o.address)
+        #
+        # Someone win the game
+        elif data[0] == 'win':
+            p = player.findPlayerByAddress(self.client_address)
+            r = room.findRoomByID(p.ID)
+            if r.status != 'running': return
+            r.status = 'over'
+            lose_data= ['', 'lose']
+            for p_o in r.players:
+                if p_o == p: continue
+                self.send(lose_data, p_o.address)
+            
 
     def startGame(self, p, r):
         """ Tell the specific player to start the game """

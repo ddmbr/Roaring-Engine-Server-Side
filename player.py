@@ -12,7 +12,7 @@ class Player():
         self.lastAlive = int(time.time())
 
     def checkTimeOut(self):
-        if int(time.time()) - self.lastAlive > 15:
+        if int(time.time()) - self.lastAlive > 2:
             if self.ID != None:
                 r = room.findRoomByID(self.ID)
                 print 'player', self.address, 'is disconnected'

@@ -8,6 +8,7 @@ class Room():
         self.ID = ID
         self.players = []
         self.track = 1
+        self.status = 'ready'
     def addPlayer(self, new_player):
         global player
         new_player = player.Player(new_player, self.ID)

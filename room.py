@@ -46,3 +46,4 @@ def processTimeOut():
         if len(rooms[i].players) == 0:
             print 'room', rooms[i].ID, 'is closed'
             del rooms[i]
+            break

@@ -63,7 +63,12 @@ class MyUDPHandler(SocketServer.BaseRequestHandler):
         #
         # Join the player to a room
         elif data[0] == 'join-room':
+            p = player.findPlayerByAddress(self.client_address)
             ID = data[1]
+            if p != None and p.ID == ID:
+                print 'he\'d already joined the room'
+                return
+            # TODO quit room
             r = room.findRoomByID(ID)
             if r != None:
                 r.addPlayer(self.client_address)

@@ -7,6 +7,8 @@ class Room():
     def __init__(self, ID):
         self.ID = ID
         self.players = []
+        self.track = 1
+        self.status = 'ready'
     def addPlayer(self, new_player):
         global player
         new_player = player.Player(new_player, self.ID)
@@ -32,10 +34,12 @@ def newRoom():
     r = findRoomByID(ID)
     return r
 
+#
+# TODO So, you can see other room's info, too
 def roomInfo(ID, key='room-info'):
     global rooms, room_num
     r = findRoomByID(ID)
-    data = ['', key, [ID, len(r.players)]]
+    data = ['', key, [ID, len(r.players), r.track]]
     return data
 
 def processTimeOut():
